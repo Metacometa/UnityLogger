@@ -1,0 +1,12 @@
+{
+  "name": "com.kiranchy.unitylogger",
+  "version": "0.1.0",
+  "displayName": "Unity Logger",
+  "description": "Simple wrapper for Unity Debug.Log",
+  "unity": "2021.3",
+  "author": {
+    "name": "Kiranchy",
+    "email": "kirillstoker@gmail.com"
+  },
+  "keywords": ["debug", "logger"]
+}
