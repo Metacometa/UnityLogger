@@ -9,13 +9,13 @@ namespace Kiranchy.UnityLogger
         public static string Format(LogData logData)
         {
             string className = Colorize(logData.Class, "cyan");
-            string unityCallbackName = Colorize
+            string unityCallbackName = Colorize(logData.Callback, "cyan");
             string methodName = Colorize(logData.Method,
                 LoggerUnityCallbackHandler.IsUnityCallback(
                     logData.Method) ?
                         "cyan" : 
                         "white"
-                );
+            );
 
             // logData
             return null;

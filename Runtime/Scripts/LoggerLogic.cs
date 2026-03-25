@@ -43,6 +43,8 @@ namespace Kiranchy.UnityLogger
 
             string result = LogFormatter.FormatEquationResult(a.Equals(b));
 
+            // Com
+
             string message = $"{formattedA} Compares to {formattedB} Equals {result}";
             Log(className, methodName, message);
         }

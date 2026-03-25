@@ -1,4 +1,4 @@
-namespace Kiranchy.UnityLogger
+namespace Kiranchy.UnityLogger.Data
 {
     internal record LogData
     {
