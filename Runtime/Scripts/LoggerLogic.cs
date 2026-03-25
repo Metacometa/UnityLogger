@@ -1,18 +1,20 @@
 using System.Diagnostics;
+using Kiranchy.UnityLogger.Colorizers;
+using Kiranchy.UnityLogger.Data.LogData;
+using Kiranchy.UnityLogger.Data.MessageComponents;
+using Kiranchy.UnityLogger.Formatters;
 
 namespace Kiranchy.UnityLogger
 {
     internal class LoggerLogic
     {
-        public static void Log(string className, string methodName, string message)
+        public static void Log(LogDataBuilder logDataBuilder)
         {
-            LogData logData = new LogData(
-                className,
-                methodName,
-                message
-            );
+            LogData logData = logDataBuilder.Build();
+            LogColorizer.Colorize(logData);
+            string formattedLog = LogFormatter.Format(logData);
 
-            // UnityEngine.Debug.Log();       
+            UnityEngine.Debug.Log(formattedLog);       
             return;
 
             // string formattedClassName = FormatClassName(className);
@@ -36,17 +38,22 @@ namespace Kiranchy.UnityLogger
             // UnityEngine.Debug.Log(log);            
         }
 
-        public static void Compare(string className, string methodName, object a, object b)
+        public static void Compare(LogDataBuilder logDataBuilder, object a, object b)
         {
-            string formattedA = LogFormatter.FormatVariable(a.ToString());
-            string formattedB = LogFormatter.FormatVariable(b.ToString());
+            // string formattedA = LogColorizer.FormatVariable(a.ToString());
+            // string formattedB = LogColorizer.FormatVariable(b.ToString());
 
-            string result = LogFormatter.FormatEquationResult(a.Equals(b));
+            // string result = LogColorizer.FormatEquationResult(a.Equals(b));
+            
+            Message message = new Message();
+            message.Add<VariableComponent>(a.ToString());
+            message.Add<TextComponent>("Compares to");
+            message.Add<VariableComponent>(b.ToString());
+            message.Add<TextComponent>("Equals");            
 
-            // Com
-
-            string message = $"{formattedA} Compares to {formattedB} Equals {result}";
-            Log(className, methodName, message);
+            logDataBuilder.WithMessage(message);
+            // string message = $"{formattedA} Compares to {formattedB} Equals {result}";
+            Log(logDataBuilder);
         }
 
         public static string GetClassFromStack()

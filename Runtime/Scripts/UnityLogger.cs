@@ -1,33 +1,55 @@
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using Kiranchy.UnityLogger.Data.LogData;
+using Kiranchy.UnityLogger.Data.MessageComponents;
 
 namespace Kiranchy.UnityLogger
 {
     public class UnityLogger
     {
-        public static void AutoLog(string message, [CallerMemberName] string methodName = "")
+        public static void AutoLog(string text, [CallerMemberName] string methodName = "")
         {
             string className = LoggerLogic.GetClassFromStack();
-            LoggerLogic.Log(className, methodName, message);
+
+            Message message = new Message(text);
+            LogDataBuilder logDataBuilder = new LogDataBuilder()
+                .WithClass(className)
+                .WithMethod(methodName)
+                .WithMessage(message);
+
+            LoggerLogic.Log(logDataBuilder);
         }
 
-        public static void AsyncLog(object callingObject, string message, [CallerMemberName] string methodName = "")
+        public static void AsyncLog(object callingObject, string text, [CallerMemberName] string methodName = "")
         {
             string className = LoggerLogic.GetClassFromObject(callingObject);
-            LoggerLogic.Log(className, methodName, message);
+
+            Message message = new Message(text);
+            LogDataBuilder logDataBuilder = new LogDataBuilder()
+                .WithClass(className)
+                .WithMethod(methodName)
+                .WithMessage(message);
+
+            LoggerLogic.Log(logDataBuilder);
         }
 
         public static void AutoCompare(object a, object b, [CallerMemberName] string methodName = "")
         {
             string className = LoggerLogic.GetClassFromStack();
-            LoggerLogic.Compare(className, methodName, a, b);            
+            LogDataBuilder logDataBuilder = new LogDataBuilder()
+                .WithClass(className)
+                .WithMethod(methodName);
+
+            LoggerLogic.Compare(logDataBuilder, a, b);            
         }
 
         public static void AsyncCompare(object callingObject, object a, object b, [CallerMemberName] string methodName = "")
         {
             string className = LoggerLogic.GetClassFromObject(callingObject);
-            LoggerLogic.Compare(className, methodName, a, b);
+            LogDataBuilder logDataBuilder = new LogDataBuilder()
+                .WithClass(className)
+                .WithMethod(methodName);
+
+            LoggerLogic.Compare(logDataBuilder, a, b);
         }
     }
 }

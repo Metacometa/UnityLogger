@@ -1,8 +1,12 @@
-namespace Kiranchy.UnityLogger.Data
+using Kiranchy.UnityLogger.Data.MessageComponents;
+
+namespace Kiranchy.UnityLogger.Data.LogData
 {
     internal class LogDataBuilder
     {
-        private LogData _data;
+        private LogData _data = new();
+
+        public LogData Build() => _data;
 
         public LogDataBuilder WithClass(string value)
         {
@@ -22,7 +26,7 @@ namespace Kiranchy.UnityLogger.Data
             return this;
         } 
 
-        public LogDataBuilder WithMessage(string value)
+        public LogDataBuilder WithMessage(Message value)
         {
             _data.Message = value;
             return this;
