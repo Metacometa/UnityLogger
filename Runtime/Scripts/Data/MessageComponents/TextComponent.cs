@@ -13,7 +13,6 @@ namespace Kiranchy.UnityLogger.Data.MessageComponents
 
         public virtual void Accept(ColorizerVisitor colorizerVisitor)
         {
-            
             colorizerVisitor.VisitTextComponent(this);
         }
     }

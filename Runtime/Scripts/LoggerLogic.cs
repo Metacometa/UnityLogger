@@ -10,55 +10,31 @@ namespace Kiranchy.UnityLogger
     {
         public static void Log(LogDataBuilder logDataBuilder)
         {
+            HandleCallback(logDataBuilder);
+            BaseFormatter formatter = new DotFormatter();
             LogData logData = logDataBuilder.Build();
-            LogColorizer.Colorize(logData);
-            string formattedLog = LogFormatter.Format(logData);
 
+            Colorizer.Colorize(logData);
+            string formattedLog = formatter.Format(logData);
             UnityEngine.Debug.Log(formattedLog);       
-            return;
-
-            // string formattedClassName = FormatClassName(className);
-            // string formattedMethodName = FormatMethodName(methodName);
-
-            // // string log = $"[{formattedClassName}] [{formattedMethodName}]: {message}";
-            // string sl = FormatPunctuation("//");
-            // string colon = FormatPunctuation(":");
-            // string log = $"{sl}{formattedClassName}{sl}{formattedMethodName}{sl}{colon} {message}";
-
-            // if (!_unityCallbacks.Contains(methodName) &&
-            //     TryGetUnityCallbackFromStack(out string unityCallback, out int frameIndex))
-            // {
-            //     string formattedUnityCallback = FormatUnityCallback(unityCallback);
-
-            //     string methodDistance = frameIndex == 1 ? " " : FormatPunctuation("...");
-            //     // log = $"[{formattedClassName}] [{formattedUnityCallback}]{methodDistance}[{formattedMethodName}]: {message}";
-            //     log = $"{sl}{formattedClassName}{sl}{formattedUnityCallback}{sl}{methodDistance}{sl}{formattedMethodName}{sl}{colon} {message}";
-            // }
-
-            // UnityEngine.Debug.Log(log);            
         }
 
         public static void Compare(LogDataBuilder logDataBuilder, object a, object b)
         {
-            // string formattedA = LogColorizer.FormatVariable(a.ToString());
-            // string formattedB = LogColorizer.FormatVariable(b.ToString());
-
-            // string result = LogColorizer.FormatEquationResult(a.Equals(b));
-            
             Message message = new Message();
-            message.Add<VariableComponent>(a.ToString());
-            message.Add<TextComponent>("Compares to");
-            message.Add<VariableComponent>(b.ToString());
-            message.Add<TextComponent>("Equals");            
+            message.Add<VariableComponent<string>>(a.ToString());
+            message.Add<TextComponent>("vs");    
+            message.Add<VariableComponent<string>>(b.ToString());
+            message.Add<TextComponent>("->");            
+            message.Add<VariableComponent<bool>>(a.Equals(b).ToString());
 
             logDataBuilder.WithMessage(message);
-            // string message = $"{formattedA} Compares to {formattedB} Equals {result}";
             Log(logDataBuilder);
         }
 
         public static string GetClassFromStack()
         {
-            var frame = new StackTrace().GetFrame(1);
+            var frame = new StackTrace().GetFrame(2);
             var method = frame.GetMethod();
 
             return method.DeclaringType?.Name ?? "None";
@@ -69,9 +45,9 @@ namespace Kiranchy.UnityLogger
             return callingObject.GetType().ToString();
         }
 
-        public static bool TryGetUnityCallbackFromStack(out string unityCallback, out int frameIndex)
+        public static bool TryGetCallbackFromStack(out string callback, out int frameIndex)
         {
-            unityCallback = null;
+            callback = null;
             frameIndex = -1;
 
             var stackTrace = new StackTrace();
@@ -82,13 +58,26 @@ namespace Kiranchy.UnityLogger
 
                 if (LoggerUnityCallbackHandler.IsUnityCallback(method.Name))
                 {
-                    unityCallback = method.Name;
+                    callback = method.Name;
                     frameIndex = i;
                     return true;
                 }
             }
 
             return false;
+        }
+
+        private static void HandleCallback(LogDataBuilder logDataBuilder)
+        {
+            LogData logData = logDataBuilder.Build();
+            if (LoggerUnityCallbackHandler.IsUnityCallback(logData.Method))
+                return;
+
+            if (TryGetCallbackFromStack(out string callback, out int frameIndex) &&
+                frameIndex > 1)
+            {
+                logDataBuilder.WithCallback(callback);                
+            }
         }
     }
 }

@@ -2,7 +2,7 @@ using Kiranchy.UnityLogger.Colorizers;
 
 namespace Kiranchy.UnityLogger.Data.MessageComponents
 {
-    internal class VariableComponent : TextComponent
+    internal class VariableComponent<T> : TextComponent
     {
         public VariableComponent(string token) : base(token) {}
 

@@ -2,7 +2,7 @@ using Kiranchy.UnityLogger.Data.LogData;
 
 namespace Kiranchy.UnityLogger.Colorizers
 {
-    internal class LogColorizer
+    internal class Colorizer
     {
         public static void Colorize(LogData logData)
         {
@@ -19,24 +19,11 @@ namespace Kiranchy.UnityLogger.Colorizers
             logData.Message.Accept(colorizerVisitor);
         }
 
-        public static string FormatVariable(string text)
-        {
-            return Colorize(text, "yellow");
-        }
-
-        public static string FormatPunctuation(string text)
-        {
-            return Colorize(text, "white");
-        }
-
-        public static string FormatEquationResult(bool result)
-        {
-            return result ? Colorize(result.ToString(), "green") : Colorize(result.ToString(), "red");
-        }
-
         public static string Colorize(string text, string color)
         {
-            return $"<color={color}>{text}</color>";
+            return string.IsNullOrEmpty(text) ? 
+                    text : 
+                    $"<color={color}>{text}</color>";
         }
     }
 }

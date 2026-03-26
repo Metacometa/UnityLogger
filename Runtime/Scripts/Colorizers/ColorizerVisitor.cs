@@ -7,9 +7,18 @@ namespace Kiranchy.UnityLogger.Colorizers
     {
         public void VisitTextComponent(TextComponent component) {}
 
-        public void VisitVariableComponent(VariableComponent component)
+        public void VisitVariableComponent<T>(VariableComponent<T> component)
         {
-            component.Token = LogColorizer.Colorize(component.Token, "yellow");
+            if (component is VariableComponent<bool> boolComponent)
+                VisitStringBool(boolComponent);
+            else
+                component.Token = Colorizer.Colorize(component.Token, "yellow");
+        }
+
+        private void VisitStringBool(VariableComponent<bool> component)
+        {
+            string color = component.Token == "True" ? "#31e731" : "#ff3535";
+            component.Token = Colorizer.Colorize(component.Token, color);
         }
     }
 }
